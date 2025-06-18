@@ -129,6 +129,9 @@ export const GroupForm = () => {
           <Command
             className="rounded-lg border shadow-md h-auto"
             shouldFilter={false}
+            onWheel={(event) => {
+              event.stopPropagation(); // This will allow mousewhell scroll, Ideally this shoul no be here.
+            }}
           >
             <PopoverTrigger asChild>
               <CommandInput
@@ -152,7 +155,7 @@ export const GroupForm = () => {
             <PopoverContent
               asChild
               onOpenAutoFocus={(event) => event.preventDefault()}
-              className="p-0 w-[var(--radix-popover-trigger-width)] bg-white"
+              className="p-0 w-[var(--radix-popover-trigger-width)] bg-white "
             >
               <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
