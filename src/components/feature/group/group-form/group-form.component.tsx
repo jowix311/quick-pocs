@@ -13,11 +13,13 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
-import { useState } from "react";
+import { ChangeEvent, Dispatch, FormEvent, FormEventHandler, SetStateAction, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { SmilePlus } from "lucide-react";
+import { Key, SmilePlus } from "lucide-react";
 import { CommandDialog } from "cmdk";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import { PopoverContent } from "@radix-ui/react-popover";
 
 /**
  * TODO
@@ -55,32 +57,51 @@ export const GroupForm = () => {
             </FormItem>
           )}
         /> */}
-      <Command  className="rounded-lg border shadow-md md:min-w-[450px]">
-        <CommandInput placeholder="Type to search..."
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              console.log("Enter")
-            }
-          }}
+      <Popover open={showSuggestions} onOpenChange={setShowSuggestions}>
+        <Command className="rounded-lg border shadow-md md:min-w-[450px]">
+          <PopoverTrigger asChild>
+            <CommandInput placeholder="Type to search..."
+              onChangeCapture={
+                (e: ChangeEvent<HTMLInputElement>) => {
+                  console.log(
+                    "Check...", e.target.value
+                  )
+                  const currentValue = e.target.value.trim();
 
-        />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup>
-            <div className="flex flex-col gap-1">
-              <CommandItem>
-                <UserInfo />
-              </CommandItem>
-              <CommandItem>
-                <UserInfo />
-              </CommandItem>
-              <CommandItem>
-                <UserInfo />
-              </CommandItem>
-            </div>
-          </CommandGroup>
-        </CommandList>
-      </Command>
+                  if(currentValue.length > 2) {
+                    setShowSuggestions(true);
+                  } else {
+                    setShowSuggestions(false);
+                  }
+                }
+              }
+              onClickCapture={(e) => {
+                // This prevents the popover when clicking the input, not sure for side effects yet
+                e.preventDefault();
+              }}
+
+            />
+          </PopoverTrigger>
+          <PopoverContent asChild onOpenAutoFocus={(event) => event.preventDefault()} className="p-0 w-[var(--radix-popover-trigger-width)] bg-white">
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup>
+                <div className="flex flex-col gap-1">
+                  <CommandItem>
+                    <UserInfo setShowSuggestions={setShowSuggestions} />
+                  </CommandItem>
+                  <CommandItem>
+                    <UserInfo setShowSuggestions={setShowSuggestions} />
+                  </CommandItem>
+                  <CommandItem>
+                    <UserInfo setShowSuggestions={setShowSuggestions} />
+                  </CommandItem>
+                </div>
+              </CommandGroup>
+            </CommandList>
+          </PopoverContent>
+        </Command>
+      </Popover>
     </form>
   </Form>
 }
@@ -88,7 +109,9 @@ export const GroupForm = () => {
 
 
 
-const UserInfo = () => {
+const UserInfo = ({setShowSuggestions}: {
+  setShowSuggestions: Dispatch<SetStateAction<boolean>>
+}) => {
   return (
     <div className="flex justify-between w-full items-center">
       <Avatar>
@@ -100,7 +123,9 @@ const UserInfo = () => {
         <p>john.doe@email.com</p>
       </div>
       <div>
-        <Button type="button" variant="outline" className="!hover:text-red-100">
+        <Button type="button" variant="outline" onClick={() => {
+          setShowSuggestions(false);
+        }}>
           <SmilePlus />
         </Button>
       </div>
