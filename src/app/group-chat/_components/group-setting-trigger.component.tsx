@@ -5,9 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 
 export const GroupSettingTrigger = () => {
+  const handleGroupSet = () => {
+    toggleGroupModal();
+  };
+
   return (
-      <Button onClick={toggleGroupModal}>
-          <Settings />
-      </Button>
-  )
-}
+    <Button
+      onClick={handleGroupSet}
+      title="Select a Chat Group from the below list first."
+    >
+      <Settings />
+    </Button>
+  );
+};

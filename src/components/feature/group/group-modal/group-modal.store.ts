@@ -6,24 +6,24 @@ type GroupModalStore = {
 };
 
 const initialStoreValue: GroupModalStore = {
-  isOpen: false
-}
+  isOpen: false,
+};
 
 // Create the store with selecto
-export const useGroupModalStore = create<GroupModalStore>()(subscribeWithSelector(() => (
-  {
-    ...initialStoreValue
-  }
-)));
+export const useGroupModalStore = create<GroupModalStore>()(
+  subscribeWithSelector(() => ({
+    ...initialStoreValue,
+  }))
+);
 
 export const toggleGroupModal = () => {
   useGroupModalStore.setState((state) => ({
-    isOpen: !state.isOpen
-  }))
-}
+    isOpen: !state.isOpen,
+  }));
+};
 
 export const closeGroupModal = () => {
   useGroupModalStore.setState((state) => ({
-    isOpen: false
-  }))
-}
+    isOpen: false,
+  }));
+};
