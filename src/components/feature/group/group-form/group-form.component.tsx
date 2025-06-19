@@ -10,20 +10,6 @@ import {
 import { useGroupForm } from "./use-group-form";
 import { Input } from "@/components/ui/input";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { useState } from "react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import {
   GroupUser,
   GroupUserAction,
   GroupUserAvatar,
@@ -31,55 +17,16 @@ import {
 } from "../group-user";
 import { UserInfo } from "./group-form.types";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { GroupFormMode } from "../group-form-modal";
+import { UserSearch } from "@/components/feature/user-search";
 
-/**
- * TODO
- * 1. Integrate with form
- * 2. Typeahead toggle hide when less than 3 characters
- * 3. Typeahead integrate to API
- * 4. Typeahead disable item when selected
- */
-
-// TODO: Remove dummy data
-const userList: UserInfo[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john.doe@email.com",
-    avatar: "https://github.com/shadcn.png",
-  },
-  {
-    id: "2",
-    name: "Jane Doe",
-    email: "jane.doe@email.com",
-    avatar: "https://github.com/shadcn.png",
-  },
-  {
-    id: "3",
-    name: "Bob Smith",
-    email: "bob.smith@email.com",
-    avatar: "https://github.com/shadcn.png",
-  },
-  {
-    id: "7",
-    name: "Johnny Mann",
-    email: "Johnny.man@email.com",
-    avatar: "https://github.com/shadcn.png",
-  },
-];
-// TODO: End remove dummy data
 
 export const GroupForm = ({ formMode }: { formMode?: GroupFormMode }) => {
   const { form, onSubmit, members, membersAppend, membersRemove } =
     useGroupForm({ formMode });
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
 
-  // TODO: Update logic and connect to API
-  const handleUserAction = () => {
-    setShowSuggestions(false);
+  const handleUserSelect = (user: UserInfo) => {
+    membersAppend(user);
   };
 
   return (
@@ -98,93 +45,16 @@ export const GroupForm = ({ formMode }: { formMode?: GroupFormMode }) => {
           )}
         />
 
-        <section>
-          <Popover open={showSuggestions} onOpenChange={setShowSuggestions}>
-            <Command
-              className={cn(
-                "rounded-lg border shadow-md h-auto transition-[color,box-shadow] outline-none",
-                "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
-                {
-                  "border-destructive ring-destructive/20 dark:ring-destructive/40":
-                    form.formState.errors.members,
-                  "focus-within:border-destructive focus-within:ring-destructive/20 dark:focus-within:ring-destructive/40":
-                    form.formState.errors.members,
-                }
-              )}
-              shouldFilter={false}
-              onWheel={(event) => {
-                event.stopPropagation(); // This will allow mousewhell scroll, Normally this should not be here, might the way this was implemented with Command.
-              }}
-            >
-              <PopoverTrigger asChild>
-                <CommandInput
-                  placeholder="Type to search..."
-                  onValueChange={(value) => {
-                    setSearchValue(value);
+        <UserSearch
+          onUserSelect={handleUserSelect}
+          hasError={!!form.formState.errors.members}
+        />
 
-                    if (value.trim().length > 2) {
-                      setShowSuggestions(true);
-                    } else {
-                      setShowSuggestions(false);
-                    }
-                  }}
-                  value={searchValue}
-                  onClickCapture={(event) => {
-                    // This prevents the popover when clicking the input, not sure for side effects yet
-                    event.preventDefault();
-                  }}
-                />
-              </PopoverTrigger>
-              <PopoverContent
-                asChild
-                onOpenAutoFocus={(event) => event.preventDefault()}
-                className="p-0 w-[var(--radix-popover-trigger-width)] bg-white "
-              >
-                <CommandList>
-                  <CommandEmpty>No results found.</CommandEmpty>
-                  <CommandGroup>
-                    {userList.map((user) => {
-                      const { id, name, email, avatar } = user;
-
-                      return (
-                        <CommandItem key={id} value={`${name} ${email}`}>
-                          <GroupUser className="shadow-md p-5 rounded-md">
-                            <GroupUserAvatar imageSource={avatar} />
-                            <GroupUserDetail>
-                              <p>{name}</p>
-                              <p>{email}</p>
-                            </GroupUserDetail>
-                            <GroupUserAction
-                              action="add"
-                              onUserAction={() => {}}
-                            />
-                          </GroupUser>
-                        </CommandItem>
-                      );
-                    })}
-                    {/* </div> */}
-                  </CommandGroup>
-                </CommandList>
-              </PopoverContent>
-            </Command>
-          </Popover>
-
-          <FormField
-            control={form.control}
-            name="members"
-            render={() => (
-              <FormItem className="mt-2">
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <GroupMembers
-            members={members}
-            onMemberAppend={membersAppend}
-            onMemberRemove={membersRemove}
-          />
-        </section>
+        <GroupMembers
+          members={members}
+          onMemberAppend={membersAppend}
+          onMemberRemove={membersRemove}
+        />
 
         <div className="flex justify-center">
           <Button className="inline-flex flex-end">Submit</Button>
