@@ -3,17 +3,10 @@ import { groupFormSchema, GroupFormSchema } from "./group-form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useGroupManagerStore } from "../group-manager";
+import { GroupFormMode } from "../group-form-modal";
+import { GroupForm } from "./group-form.component";
 
-export enum GroupFormMode {
-  CREATE = "create",
-  EDIT = "edit",
-}
-
-export type UseGroupFormProps = {
-  mode: GroupFormMode;
-};
-
-export const useGroupForm = ({ mode }: UseGroupFormProps) => {
+export const useGroupForm = ({ formMode }: { formMode?: GroupFormMode }) => {
   const form = useForm<GroupFormSchema>({
     resolver: zodResolver(groupFormSchema),
     defaultValues: {
@@ -39,14 +32,15 @@ export const useGroupForm = ({ mode }: UseGroupFormProps) => {
     const { chatId, groupName, members } = useGroupManagerStore.getState();
 
     if (!chatId) {
+      form.reset();
       return;
     }
 
-    if (mode === GroupFormMode.EDIT) {
+    if (formMode === GroupFormMode.CREATE || !formMode) {
+      form.reset();
+    } else {
       form.setValue("groupName", groupName);
       form.setValue("members", members);
-    } else {
-      form.reset();
     }
   }, []);
 

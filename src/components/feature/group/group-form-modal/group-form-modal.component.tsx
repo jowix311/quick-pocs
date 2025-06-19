@@ -6,12 +6,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { useGroupModal } from "./use-group-moodal";
-import { toggleGroupModal } from "./group-modal.store";
+} from "@/components/ui/dialog";
+import { useGroupFormModal } from "./use-group-form-modal";
+import { toggleGroupModal } from "./group-form-modal.store";
+import { GroupForm } from "../group-form";
 
-export const GroupModal = ({ children }: { children: React.ReactNode }) => {
-  const { isShowModal } = useGroupModal();
+export const GroupFormModal = () => {
+  const { isShowModal, formMode } = useGroupFormModal();
 
   return (
     <Dialog open={isShowModal} onOpenChange={toggleGroupModal}>
@@ -21,9 +22,11 @@ export const GroupModal = ({ children }: { children: React.ReactNode }) => {
           <DialogDescription className="hidden">
             Group Form Modal
           </DialogDescription>
-          {children}
+          <div className="pt-3">
+            <GroupForm formMode={formMode} />
+          </div>
         </DialogHeader>
       </DialogContent>
     </Dialog>
   );
-}
+};

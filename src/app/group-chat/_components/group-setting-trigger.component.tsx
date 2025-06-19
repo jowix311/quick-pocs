@@ -1,12 +1,17 @@
 "use client";
 
-import { toggleGroupModal } from "@/components/feature/group";
+import { useGroupFormModal,
+  GroupFormMode,
+  openGroupModal,
+} from "@/components/feature/group";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 
 export const GroupSettingTrigger = () => {
   const handleGroupSet = () => {
-    toggleGroupModal();
+    openGroupModal({
+      formMode: GroupFormMode.EDIT,
+    });
   };
 
   return (

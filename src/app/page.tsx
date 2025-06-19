@@ -1,7 +1,5 @@
-import { GroupModal, GroupForm } from "@/components/feature/group";
-import {
-  GroupSettingTrigger,
-} from "./group-chat/_components/group-setting-trigger.component";
+import { GroupFormModal } from "@/components/feature/group";
+import { GroupSettingTrigger } from "./group-chat/_components/group-setting-trigger.component";
 import { GroupList } from "./group-chat/_components/group-list.component";
 import { GroupCreateButton } from "./group-chat/_components/group-create-button.component";
 
@@ -16,9 +14,7 @@ export default function Home() {
           <GroupList />
         </section>
 
-        <GroupModal>
-          <GroupForm />
-        </GroupModal>
+        <GroupFormModal />
       </main>
     </div>
   );

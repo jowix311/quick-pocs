@@ -5,10 +5,9 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useGroupForm, UseGroupFormProps } from "./use-group-form";
+import { useGroupForm } from "./use-group-form";
 import { Input } from "@/components/ui/input";
 import {
   Command,
@@ -18,7 +17,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -31,9 +30,9 @@ import {
   GroupUserDetail,
 } from "../group-user";
 import { UserInfo } from "./group-form.types";
-import { useGroupManagerStore } from "../group-manager";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { GroupFormMode } from "../group-form-modal";
 
 /**
  * TODO
@@ -41,10 +40,6 @@ import { cn } from "@/lib/utils";
  * 2. Typeahead toggle hide when less than 3 characters
  * 3. Typeahead integrate to API
  * 4. Typeahead disable item when selected
- *
- *
- *
- *
  */
 
 // TODO: Remove dummy data
@@ -74,11 +69,11 @@ const userList: UserInfo[] = [
     avatar: "https://github.com/shadcn.png",
   },
 ];
-
 // TODO: End remove dummy data
-export const GroupForm = ({ mode }: UseGroupFormProps) => {
+
+export const GroupForm = ({ formMode }: { formMode?: GroupFormMode }) => {
   const { form, onSubmit, members, membersAppend, membersRemove } =
-    useGroupForm({ mode });
+    useGroupForm({ formMode });
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
