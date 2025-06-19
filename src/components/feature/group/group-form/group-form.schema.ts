@@ -9,8 +9,8 @@ export const groupMemberSchema = z.object({
 });
 
 export const groupFormSchema = z.object({
-  groupName: z.string().min(1, "Pleae enter a Group Name."),
-  members: z.array(groupMemberSchema).min(1, "Please at least one member,"),
+  groupName: z.string().min(1, "Pleae enter a group name."),
+  members: z.array(groupMemberSchema).min(1, "Please add at least one member,"),
 });
 
 export type GroupFormSchema = z.infer<typeof groupFormSchema>;

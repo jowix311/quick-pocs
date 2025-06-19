@@ -101,10 +101,16 @@ export const GroupForm = ({ formMode }: { formMode?: GroupFormMode }) => {
         <section>
           <Popover open={showSuggestions} onOpenChange={setShowSuggestions}>
             <Command
-              className={cn("rounded-lg border shadow-md h-auto", {
-                "border-destructive focus:ring-destructive":
-                  form.formState.errors.members,
-              })}
+              className={cn(
+                "rounded-lg border shadow-md h-auto transition-[color,box-shadow] outline-none",
+                "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
+                {
+                  "border-destructive ring-destructive/20 dark:ring-destructive/40":
+                    form.formState.errors.members,
+                  "focus-within:border-destructive focus-within:ring-destructive/20 dark:focus-within:ring-destructive/40":
+                    form.formState.errors.members,
+                }
+              )}
               shouldFilter={false}
               onWheel={(event) => {
                 event.stopPropagation(); // This will allow mousewhell scroll, Normally this should not be here, might the way this was implemented with Command.
@@ -173,7 +179,11 @@ export const GroupForm = ({ formMode }: { formMode?: GroupFormMode }) => {
             )}
           />
 
-          <GroupMembers members={members} />
+          <GroupMembers
+            members={members}
+            onMemberAppend={membersAppend}
+            onMemberRemove={membersRemove}
+          />
         </section>
 
         <div className="flex justify-center">
@@ -186,9 +196,11 @@ export const GroupForm = ({ formMode }: { formMode?: GroupFormMode }) => {
 
 const GroupMembers = ({
   members,
+  onMemberRemove,
 }: {
   members: ReturnType<typeof useGroupForm>["members"];
-  onRemoveMember?: ReturnType<typeof useGroupForm>["membersRemove"];
+  onMemberAppend: ReturnType<typeof useGroupForm>["membersAppend"];
+  onMemberRemove: ReturnType<typeof useGroupForm>["membersRemove"];
 }) => {
   if (members.length === 0) {
     return <p className="text-center text-gray-300">No group members yet.</p>;
@@ -197,7 +209,7 @@ const GroupMembers = ({
     <section>
       <p className="text-2xl font-semibold">Members:</p>
       <div className="flex flex-col gap-1 pb-5 max-h-[300px] overflow-y-auto">
-        {members.map((member) => {
+        {members.map((member, index) => {
           const { id, name, email, avatar } = member;
           return (
             <GroupUser key={id} className="shadow-md p-5 rounded-md">
@@ -206,7 +218,13 @@ const GroupMembers = ({
                 <p>{name}</p>
                 <p>{email}</p>
               </GroupUserDetail>
-              <GroupUserAction action="remove" onUserAction={() => {}} />
+              <GroupUserAction
+                action="remove"
+                onUserAction={() => {
+                  onMemberRemove(index);
+                  // TODO: Update logic based on BE
+                }}
+              />
             </GroupUser>
           );
         })}
