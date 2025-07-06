@@ -2,6 +2,7 @@ import { GroupFormModal } from "@/components/feature/group";
 import { GroupSettingTrigger } from "./group-chat/_components/group-setting-trigger.component";
 import { GroupList } from "./group-chat/_components/group-list.component";
 import { GroupCreateButton } from "./group-chat/_components/group-create-button.component";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -15,6 +16,8 @@ export default function Home() {
         </section>
 
         <GroupFormModal />
+
+        <Link href="/suspense-list" className="underline">Go to suspense list</Link>
       </main>
     </div>
   );
